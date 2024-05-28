@@ -56,3 +56,40 @@ describe('/api/topics', () => {
         })
     })
 })
+
+describe('/api/article/:articles_id', () => {
+    test('GET: 200 Responds with an array of topic objects', () => {
+        return request(app)
+        .get('/api/articles/1')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.article).toMatchObject({
+                article_id: 1,
+                title: "Living in the shadow of a great man",
+                topic: "mitch",
+                author: "butter_bridge",
+                body: "I find this existence challenging",
+                created_at: expect.any(String),
+                votes: 100,
+                article_img_url:
+                  "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+              })
+        })
+    })
+    test('GET: 404 Responds with error message when passed a valid but non-existing article id', () => {
+        return request(app)
+        .get('/api/articles/9999')
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Article does not exist')
+        })
+    })
+    test('GET: 400 Responds with error message when passed an invalid article id', () => {
+        return request(app)
+        .get('/api/articles/not_an_id')
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Bad request')
+        })
+    })
+})
