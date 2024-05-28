@@ -17,9 +17,6 @@ describe('all endpoints', () => {
         return request(app)
         .get('/api/invalid-endpoint')
         .expect(404)
-        // .then(({ body }) => {
-        //     expect(body.msg).toBe('Endpoint not found')
-        // })
     })
 })
 
