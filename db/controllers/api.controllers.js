@@ -1,8 +1,9 @@
-const { fetchEndpoints } = require("../models/api.models")
+const { fetchEndpoints } = require("../models/api.models");
+const fs = require('fs');
 
 exports.getEndpoints = (req, res) => {
-    fetchEndpoints()
-    .then((endpoints) => {
-        res.status(200).send({ endpoints })
-    })
+    fs.readFile('endpoints.json', (err, data) => {
+        const endpoints = JSON.parse(data);
+        res.status(200).send({ endpoints });
+    });
 }
