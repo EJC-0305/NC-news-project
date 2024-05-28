@@ -12,6 +12,14 @@ afterAll(() => {
     connection.end();
 })
 
+describe('all endpoints', () => {
+    test('404: Responds with error message when passed an invalid endpoint', () => {
+        return request(app)
+        .get('/api/invalid-endpoint')
+        .expect(404)
+    })
+})
+
 describe('/api', () => {
     test('GET: 200 Responds with an object describing all the available endpoints', () => {
         return request(app)
