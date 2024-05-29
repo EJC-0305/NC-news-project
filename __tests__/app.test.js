@@ -103,6 +103,8 @@ describe('/api/articles/:articles_id', () => {
                   "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
               })
         })
+
+        
     })
     test('GET: 404 Responds with error message when passed a valid but non-existing article id', () => {
         return request(app)
@@ -115,6 +117,64 @@ describe('/api/articles/:articles_id', () => {
     test('GET: 400 Responds with error message when passed an invalid article id', () => {
         return request(app)
         .get('/api/articles/not_an_id')
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Bad request')
+        })
+    })
+
+    test('PATCH: 200 Responds with updated article', () => {
+        return request(app)
+        .patch('/api/articles/1')
+        .send({
+            inc_votes : 1
+        })
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.article).toMatchObject({
+                article_id: 1,
+                title: "Living in the shadow of a great man",
+                topic: "mitch",
+                author: "butter_bridge",
+                body: "I find this existence challenging",
+                created_at: expect.any(String),
+                votes: 101,
+                article_img_url:
+                  "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            })
+        })
+    })
+
+    test('PATCH: 404 Responds with error message when passed a valid but non-existing article id', () => {
+        return request(app)
+        .patch('/api/articles/9999')
+        .send({
+            inc_votes : 1
+        })
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Article does not exist')
+        })
+    })
+
+    test('PATCH: 400 Responds with error message when passed an invalid article id', () => {
+        return request(app)
+        .patch('/api/articles/not_an_id')
+        .send({
+            inc_votes : 1
+        })
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Bad request')
+        })
+    })
+
+    test('PATCH: 400 Responds with error message when passed an invalid inc_votes value', () => {
+        return request(app)
+        .patch('/api/articles/not_an_id')
+        .send({
+            inc_votes : 'cat'
+        })
         .expect(400)
         .then(({ body }) => {
             expect(body.msg).toBe('Bad request')
