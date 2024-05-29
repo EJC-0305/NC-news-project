@@ -82,5 +82,23 @@
         }
       ]
     }
+  },
+  "POST /api/articles/article_id/comments": {
+    "description": "adds new comment to database and serves the new comment",
+    "queries": [],
+    "requestFormat": {
+      "username": "String",
+      "body": "String"
+    },
+    "exampleResponse": {
+      "new_comment": {
+        "comment_id": 19,
+        "body": "Meow",
+        "article_id": 5,
+        "author": "butter_bridge",
+        "votes": 0,
+        "created_at": "2024-05-29T13:50:14.309Z"
+      }
+    }
   }
 }
