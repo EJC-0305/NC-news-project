@@ -265,6 +265,32 @@ describe('/api/articles/:articles_id/comments', () => {
         })
     })
 
+    test('POST: 404 Responds with error message when passed a username that does not exist on the database', () => {
+        return request(app)
+        .post('/api/articles/5/comments')
+        .send({
+            username: 'Queen Barbara',
+            body: "Meow"
+        })
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('User does not exist')
+        })
+    })
+
+    test('POST: 400 Responds with error message when passed an invalid article id', () => {
+        return request(app)
+        .post('/api/articles/not_an_id/comments')
+        .send({
+            username: 'butter_bridge',
+            body: "Meow"
+        })
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Bad request')
+        })
+    })
+
     test('POST: 400 Responds with error message when not passed necessary properties in body', () => {
         return request(app)
         .post('/api/articles/5/comments')
