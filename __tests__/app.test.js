@@ -85,7 +85,7 @@ describe('/api/articles', () => {
     })
 })
 
-describe('/api/article/:articles_id', () => {
+describe('/api/articles/:articles_id', () => {
     test('GET: 200 Responds with article object of specified id', () => {
         return request(app)
         .get('/api/articles/1')
@@ -118,6 +118,57 @@ describe('/api/article/:articles_id', () => {
         .expect(400)
         .then(({ body }) => {
             expect(body.msg).toBe('Bad request')
+        })
+    })
+})
+
+describe('/api/articles/:articles_id/comments', () => {
+    test('GET: 200 Responds with array of comments for article with specified id sorted in descending date order', () => {
+        return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.comments.length).toBe(11);
+            body.comments.forEach((comment) => {
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    body: expect.any(String),
+                    votes: expect.any(Number),
+                    author: expect.any(String),
+                    article_id: 1,
+                    created_at: expect.any(String)
+                })
+            })
+            expect(body.comments).toBeSortedBy("created_at", {
+                descending: true
+            })
+        })
+    })
+
+    test('GET: 404 Responds with error message when passed a valid but non-existing article id', () => {
+        return request(app)
+        .get('/api/articles/9999/comments')
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Article does not exist')
+        })
+    })
+
+    test('GET: 400 Responds with error message when passed an invalid article id', () => {
+        return request(app)
+        .get('/api/articles/not_an_id/comments')
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Bad request')
+        })
+    })
+
+    test('GET: 200 Responds with empty array when passed a valid article_id but which has no comments', () => {
+        return request(app)
+        .get('/api/articles/2/comments')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.comments).toEqual([])
         })
     })
 })
