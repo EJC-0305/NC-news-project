@@ -171,4 +171,50 @@ describe('/api/articles/:articles_id/comments', () => {
             expect(body.comments).toEqual([])
         })
     })
+
+    test('POST: 201 Responds added comment object', () => {
+        return request(app)
+        .post('/api/articles/5/comments')
+        .send({
+            username: 'butter_bridge',
+            body: "Meow"
+        })
+        .expect(201)
+        .then(({ body }) => {
+            expect(body.new_comment).toMatchObject({
+                    comment_id: 19,
+                    body: "Meow",
+                    votes: 0,
+                    author: 'butter_bridge',
+                    article_id: 5,
+                    created_at: expect.any(String)
+            })
+        })
+    })
+
+    test('POST: 404 Responds with error message when passed a valid but non-existing article id', () => {
+        return request(app)
+        .post('/api/articles/9999/comments')
+        .send({
+            username: 'butter_bridge',
+            body: "Meow"
+        })
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Article does not exist')
+        })
+    })
+
+    test('POST: 400 Responds with error message when not passed necessary properties in body', () => {
+        return request(app)
+        .post('/api/articles/5/comments')
+        .send({
+            body: "Meow"
+        })
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Bad request')
+        })
+    })
 })
+
