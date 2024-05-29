@@ -15,3 +15,13 @@ exports.fetchArticles = () => {
         return result.rows;
     })
 }
+
+exports.updateVotes = (votes, article_id) => {
+    return db.query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *`, [votes.inc_votes, article_id])
+    .then((result) => {
+        if(!result.rows.length){
+            return Promise.reject({ status: 404, msg: "Article does not exist" })
+        }
+        return result.rows[0];
+    })
+}
