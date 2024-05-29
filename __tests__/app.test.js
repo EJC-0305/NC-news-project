@@ -60,8 +60,33 @@ describe('/api/topics', () => {
     })
 })
 
+describe('/api/articles', () => {
+    test('GET: 200 Responds with an array of all article objects with comment count added and body removed - in descending order of creation date', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles.length).toBe(13);
+            expect(body.articles[0]).toMatchObject({
+                article_id: 3,
+                title: expect.any(String),
+                topic: expect.any(String),
+                author: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_img_url: expect.any(String),
+                comment_count: "2",
+            });
+            expect(body.articles[0]).not.toHaveProperty('body');
+            expect(body.articles).toBeSortedBy("created_at", {
+                descending: true
+            })
+        })
+    })
+})
+
 describe('/api/article/:articles_id', () => {
-    test('GET: 200 Responds with an array of topic objects', () => {
+    test('GET: 200 Responds with article object of specified id', () => {
         return request(app)
         .get('/api/articles/1')
         .expect(200)
