@@ -75,6 +75,49 @@ describe('/api/articles', () => {
             })
         })
     })
+
+    test('GET: 200 Responds with an array of article objects with specified topic when passed a topic query', () => {
+        return request(app)
+        .get('/api/articles?topic=mitch')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles.length).toBe(12);
+            body.articles.forEach((article) => {
+                expect(article).toMatchObject({
+                    article_id: expect.any(Number),
+                    title: expect.any(String),
+                    topic: "mitch",
+                    author: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    article_img_url: expect.any(String),
+                    comment_count: expect.any(String)
+                })
+                expect(article).not.toHaveProperty('body');
+            })
+            expect(body.articles).toBeSortedBy("created_at", {
+                descending: true
+            })
+        })
+    })
+
+    test('GET: 200 Responds with an empty array when passed an existing topic but which appears in no articles', () => {
+        return request(app)
+        .get('/api/articles?topic=paper')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles).toEqual([])
+        })
+    })
+
+    test('GET: 404 Responds an error message when passed a topic that does not exist', () => {
+        return request(app)
+        .get('/api/articles?topic=dogs')
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Topic does not exist")   
+        })
+    })
 })
 
 describe('/api/articles/:articles_id', () => {
