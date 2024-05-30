@@ -1,4 +1,5 @@
 const { fetchArticleById, fetchArticles, updateVotes } = require("../models/articles.models")
+const { fetchTopics } = require("../models/topics.models")
 
 exports.getArticleById = (req, res, next) => {
     fetchArticleById(req.params.article_id)
@@ -11,9 +12,26 @@ exports.getArticleById = (req, res, next) => {
 }
 
 exports.getArticles = (req, res, next) => {
-    fetchArticles()
+    if(req.query.topic){
+        fetchTopics()
+        .then((topics) => {
+            let isTopic = false;
+            topics.forEach((topic) => {
+                if(topic.slug === req.query.topic){
+                    isTopic = true;
+                }
+            })
+            if(!isTopic){
+                next({ status: 404, msg: "Topic does not exist"})
+            }
+        })
+    }
+    fetchArticles(req.query.topic)
     .then((articles) => {
         res.status(200).send({ articles })
+    })
+    .catch((err) => {
+        next(err)
     })
 }
 

@@ -24,7 +24,7 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all articles, sorted by created_on in descending order (no body and including comment_count",
+    "description": "serves an array of all articles, sorted by created_on in descending order (no body and including comment_count). When a query is passed, results will only include articles that adhere to the query",
     "queries": ["author", "topic", "sort_by", "order"],
     "requestFormat": {},
     "exampleResponse": {
