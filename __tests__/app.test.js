@@ -3,6 +3,7 @@ const request = require('supertest');
 const seed = require('../db/seeds/seed.js');
 const data = require('../db/data/test-data/index.js');
 const connection = require('../db/connection.js');
+const endpoints = require('../endpoints.json');
 
 beforeEach(() => {
     return seed(data);
@@ -29,16 +30,7 @@ describe('/api', () => {
         .get('/api')
         .expect(200)
         .then(({ body }) => {
-            const availableEndpoints = Object.keys(body.endpoints)
-            availableEndpoints.forEach((endpoint) => {
-                expect(endpoint.startsWith('GET') || endpoint.startsWith('POST') || endpoint.startsWith('DELETE') || endpoint.startsWith('PATCH')).toBe(true);
-                expect(body.endpoints[endpoint]).toMatchObject({
-                    description: expect.any(String),
-                    queries: expect.any(Array),
-                    requestFormat: expect.any(Object),
-                    exampleResponse: expect.any(Object)
-                })
-            })
+            expect(body.endpoints).toEqual(endpoints)
         })
     })
 })
