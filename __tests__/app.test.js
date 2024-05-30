@@ -304,3 +304,28 @@ describe('/api/articles/:articles_id/comments', () => {
     })
 })
 
+describe('/api/comments/comment_id', () => {
+    test('DELETE: 204 Responds with no content', () => {
+        return request(app)
+        .delete('/api/comments/2')
+        .expect(204)
+    })
+
+    test('DELETE: 404 Responds with an error message when passes a valid but non-existing comment id', () => {
+        return request(app)
+        .delete('/api/comments/9999')
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Comment does not exist')
+        })
+    })
+
+    test('DELETE: 400 Responds with an error message when passes an invalid comment id', () => {
+        return request(app)
+        .delete('/api/comments/not-an-id')
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Bad request')
+        })
+    })
+})
