@@ -115,7 +115,7 @@ describe('/api/articles/:articles_id', () => {
         })
     })
 
-    test('PATCH: 200 Responds with updated article', () => {
+    test('PATCH: 200 Responds with updated article when passed a valid inc_votes', () => {
         return request(app)
         .patch('/api/articles/1')
         .send({
@@ -131,6 +131,26 @@ describe('/api/articles/:articles_id', () => {
                 body: "I find this existence challenging",
                 created_at: expect.any(String),
                 votes: 101,
+                article_img_url:
+                  "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            })
+        })
+    })
+
+    test('PATCH: 200 Responds with unchanged article when passed no inc_votes', () => {
+        return request(app)
+        .patch('/api/articles/1')
+        .send({})
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.article).toMatchObject({
+                article_id: 1,
+                title: "Living in the shadow of a great man",
+                topic: "mitch",
+                author: "butter_bridge",
+                body: "I find this existence challenging",
+                created_at: expect.any(String),
+                votes: 100,
                 article_img_url:
                   "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
             })
@@ -163,7 +183,7 @@ describe('/api/articles/:articles_id', () => {
 
     test('PATCH: 400 Responds with error message when passed an invalid inc_votes value', () => {
         return request(app)
-        .patch('/api/articles/not_an_id')
+        .patch('/api/articles/1')
         .send({
             inc_votes : 'cat'
         })
