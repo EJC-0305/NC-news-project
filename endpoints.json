@@ -124,6 +124,6 @@
     "description": "deletes the comment with the specified id from the database",
     "queries": [],
     "requestFormat": {},
-    "exampleResponse": {}
+    "exampleResponse": "No response"
   }
 }
