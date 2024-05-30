@@ -17,7 +17,17 @@ exports.fetchArticles = () => {
 }
 
 exports.updateVotes = (votes, article_id) => {
-    return db.query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *`, [votes.inc_votes, article_id])
+    let query = 'UPDATE articles SET votes = votes';
+    const params = [article_id];
+
+    if(votes.inc_votes) {
+        query += ` + $1 WHERE article_id = $2 RETURNING *`;
+        params.unshift(votes.inc_votes);
+    } else {
+        query += ` WHERE article_id = $1 RETURNING *`
+    }
+
+    return db.query(query, params)
     .then((result) => {
         if(!result.rows.length){
             return Promise.reject({ status: 404, msg: "Article does not exist" })
