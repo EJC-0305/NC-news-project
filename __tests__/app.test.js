@@ -110,12 +110,50 @@ describe('/api/articles', () => {
         })
     })
 
-    test('GET: 404 Responds an error message when passed a topic that does not exist', () => {
+    test('GET: 404 Responds with an error message when passed a topic that does not exist', () => {
         return request(app)
         .get('/api/articles?topic=dogs')
         .expect(404)
         .then(({ body }) => {
             expect(body.msg).toBe("Topic does not exist")   
+        })
+    })
+
+    test('GET: 200 Responds with an array of article objects sorted by column when passed a sort_by query', () => {
+        return request(app)
+        .get('/api/articles?sort_by=title')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles).toBeSortedBy("title", {
+                descending: true
+            })
+        })
+    })
+
+    test('GET: 404 Responds with an error message when passed a column that does not exist in sort_by query', () => {
+        return request(app)
+        .get('/api/articles?sort_by=not_a_column')
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Column does not exist")   
+        })
+    })
+
+    test('GET: 200 Responds with an array of article objects in ascending order when passed asc in an order_by query', () => {
+        return request(app)
+        .get('/api/articles?order_by=asc')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles).toBeSortedBy("created_at")
+        })
+    })
+
+    test('GET: 404 Responds with an error message when passed a non-valid order_by', () => {
+        return request(app)
+        .get('/api/articles?order_by=not_valid_order_by')
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Invalid order_by")   
         })
     })
 })
