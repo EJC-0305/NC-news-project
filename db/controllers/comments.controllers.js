@@ -27,8 +27,9 @@ exports.deleteComment = (req, res, next) => {
     .then((data) => {
         if(!data.rowCount) {
             next({ status: 404, msg: "Comment does not exist" });
+        } else{
+            res.status(204).send();
         }
-        res.status(204).send();
     })
     .catch((err) => {
         next(err)
