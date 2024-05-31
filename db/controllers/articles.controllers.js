@@ -34,7 +34,14 @@ exports.getArticles = (req, res, next) => {
         }
     }
 
-    fetchArticles(req.query.topic, req.query.sort_by)
+    if(req.query.order_by){
+        const validOrderBy = ['asc', 'desc', 'ASC', 'DESC']
+        if(!validOrderBy.includes(req.query.order_by)) {
+            next({ status: 404, msg: "Invalid order_by" })
+        }
+    }
+
+    fetchArticles(req.query.topic, req.query.sort_by, req.query.order_by)
     .then((articles) => {
         res.status(200).send({ articles })
     })
