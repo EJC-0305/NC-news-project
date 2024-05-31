@@ -52,7 +52,7 @@ describe('/api/topics', () => {
     })
 })
 
-describe.only('/api/articles', () => {
+describe('/api/articles', () => {
     test('GET: 200 Responds with an array of all article objects with comment count added and body removed - in descending order of creation date', () => {
         return request(app)
         .get('/api/articles')
@@ -136,6 +136,24 @@ describe.only('/api/articles', () => {
         .expect(404)
         .then(({ body }) => {
             expect(body.msg).toBe("Column does not exist")   
+        })
+    })
+
+    test('GET: 200 Responds with an array of article objects in ascending order when passed asc in an order_by query', () => {
+        return request(app)
+        .get('/api/articles?order_by=asc')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles).toBeSortedBy("created_at")
+        })
+    })
+
+    test('GET: 404 Responds with an error message when passed a non-valid order_by', () => {
+        return request(app)
+        .get('/api/articles?order_by=not_valid_order_by')
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Invalid order_by")   
         })
     })
 })
