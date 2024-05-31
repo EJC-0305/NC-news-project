@@ -197,6 +197,7 @@ describe('/api/articles/:articles_id', () => {
             expect(body.msg).toBe('Article does not exist')
         })
     })
+
     test('GET: 400 Responds with error message when passed an invalid article id', () => {
         return request(app)
         .get('/api/articles/not_an_id')
@@ -447,6 +448,29 @@ describe('/api/users', () => {
                     avatar_url: expect.any(String)
                 });
             });
+        })
+    })
+
+    test('GET: 200 Responds with object of user with specified username', () => {
+        return request(app)
+        .get('/api/users/butter_bridge')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.user).toMatchObject({
+                username: 'butter_bridge',
+                name: 'jonny',
+                avatar_url:
+                  'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg'             
+            });
+        })
+    })
+
+    test('GET: 404 Responds with error message when passed a valid but non-existing username', () => {
+        return request(app)
+        .get('/api/users/QueenBarbara')
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('User does not exist')
         })
     })
 })
