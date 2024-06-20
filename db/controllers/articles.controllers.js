@@ -28,7 +28,7 @@ exports.getArticles = (req, res, next) => {
     }
 
     if(req.query.sort_by){
-        const validColumns = ['article_id', 'title', 'topic', 'author', 'body', 'created_at', 'votes', 'article_img_url']
+        const validColumns = ['article_id', 'title', 'topic', 'author', 'body', 'created_at', 'votes', 'article_img_url', 'comment_count']
         if(!validColumns.includes(req.query.sort_by)) {
             next({ status: 404, msg: "Column does not exist" })
         }
